@@ -1,4 +1,3 @@
-# ============================================================
 # COMPANY FINANCIAL HEALTH SCANNER
 # Programming for Economists II - Final Project - Marina, Anja Ruzica and Sergio
 # ============================================================
@@ -9,7 +8,7 @@
 # ============================================================
 
 
-# -------------------- DATA LOADING --------------------
+# DATA LOADING
 
 def load_companies(filename):
     """
@@ -65,7 +64,7 @@ def load_companies(filename):
     return companies
 
 
-# -------------------- RATIO CALCULATIONS --------------------
+# RATIO CALCULATIONS
 
 def calculate_profit_margin(revenue, costs):
     """
@@ -133,7 +132,7 @@ def calculate_revenue_per_employee(revenue, employees):
     return round(rpe, 2)
 
 
-# -------------------- GRADING SYSTEM --------------------
+# GRADING SYSTEM 
 
 def assign_grade(profit_margin, debt_ratio, cash_runway):
     """
@@ -147,7 +146,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     """
     points = 0
 
-    # --- Score profit margin (0 to 3 points) ---
+    # Score profit margin (0 to 3 points) 
     if profit_margin >= 20:
         points = points + 3
     elif profit_margin >= 10:
@@ -157,7 +156,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Negative margin = 0 points
 
-    # --- Score debt ratio (0 to 3 points) ---
+    # Score debt ratio (0 to 3 points) 
     if debt_ratio <= 20:
         points = points + 3
     elif debt_ratio <= 40:
@@ -167,7 +166,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Very high debt = 0 points
 
-    # --- Score cash runway (0 to 3 points) ---
+    # Score cash runway (0 to 3 points) 
     if cash_runway == -1.0:
         # Profitable company, no burn
         points = points + 3
@@ -178,7 +177,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Less than 6 months = danger
 
-    # --- Convert total points to a letter grade ---
+    # Convert total points to a letter grade 
     if points >= 8:
         grade = "A"
     elif points >= 6:
@@ -193,7 +192,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     return (grade, points)
 
 
-# -------------------- ANALYSIS ENGINE --------------------
+#  ANALYSIS ENGINE 
 
 def analyze_company(name, data):
     """
@@ -247,7 +246,7 @@ def analyze_all_companies(companies):
     return results
 
 
-# -------------------- DISPLAY FUNCTIONS --------------------
+#  DISPLAY FUNCTIONS 
 
 def display_result(result):
     """
@@ -310,7 +309,7 @@ def display_ranking(results):
     print("=" * 55)
 
 
-# -------------------- REPORT GENERATION --------------------
+#  REPORT GENERATION 
 
 def save_report(results, filename):
     """
@@ -349,7 +348,7 @@ def save_report(results, filename):
     return True
 
 
-# -------------------- INTERACTIVE INPUT --------------------
+#  INTERACTIVE INPUT 
 
 def get_company_from_user():
     """
@@ -412,7 +411,7 @@ def get_valid_integer(prompt):
             print("  Invalid input. Please enter a whole number.")
 
 
-# -------------------- MAIN MENU --------------------
+#  MAIN MENU 
 
 def show_menu():
     """
@@ -501,5 +500,5 @@ def main():
             print("\n  Invalid choice. Please enter 1, 2, 3, 4, or 5.")
 
 
-# -------------------- RUN THE PROGRAM --------------------
+# RUN THE PROGRAM 
 main()
