@@ -13,7 +13,9 @@
 def load_companies(filename):
     """
     Reads company financial data from a text file.
-    Each line format: Name,Revenue,Costs,Debt,Cash,Employees
+    Each line format: Name,Sector,Revenue,Costs,Debt,Cash,Employees
+    or: Name,Revenue,Costs,Debt,Cash,Employees
+    Lines starting with # are treated as comments and skipped.
     :param filename: string, path to the data file
     :return: dictionary where keys are company names and
              values are dictionaries with financial data
@@ -29,42 +31,58 @@ def load_companies(filename):
     for line in fp:
         line = line.strip()
 
-        # Skip empty lines
+        # Skip empty lines and comment lines
         if len(line) == 0:
+            continue
+        if line[0] == "#":
             continue
 
         parts = line.split(",")
 
-        # We expect exactly 6 fields per line
-        if len(parts) != 6:
+        # We accept 6 fields (no sector) or 7 fields (with sector)
+        if len(parts) == 7:
+            # Format: Name,Sector,Revenue,Costs,Debt,Cash,Employees
+            try:
+                name = parts[0].strip()
+                # parts[1] is sector - we skip it
+                revenue = float(parts[2].strip())
+                costs = float(parts[3].strip())
+                debt = float(parts[4].strip())
+                cash = float(parts[5].strip())
+                employees = int(parts[6].strip())
+            except ValueError:
+                print("Warning: Invalid numbers in line ->", line)
+                continue
+        elif len(parts) == 6:
+            # Format: Name,Revenue,Costs,Debt,Cash,Employees
+            try:
+                name = parts[0].strip()
+                revenue = float(parts[1].strip())
+                costs = float(parts[2].strip())
+                debt = float(parts[3].strip())
+                cash = float(parts[4].strip())
+                employees = int(parts[5].strip())
+            except ValueError:
+                print("Warning: Invalid numbers in line ->", line)
+                continue
+        else:
             print("Warning: Skipping bad line ->", line)
             continue
 
-        try:
-            name = parts[0].strip()
-            revenue = float(parts[1].strip())
-            costs = float(parts[2].strip())
-            debt = float(parts[3].strip())
-            cash = float(parts[4].strip())
-            employees = int(parts[5].strip())
-
-            companies[name] = {
-                "revenue": revenue,
-                "costs": costs,
-                "debt": debt,
-                "cash": cash,
-                "employees": employees
-            }
-        except ValueError:
-            print("Warning: Invalid numbers in line ->", line)
-            continue
+        companies[name] = {
+            "revenue": revenue,
+            "costs": costs,
+            "debt": debt,
+            "cash": cash,
+            "employees": employees
+        }
 
     fp.close()
     print("Loaded", len(companies), "companies from", filename)
     return companies
 
 
-# RATIO CALCULATIONS
+#  RATIO CALCULATIONS 
 
 def calculate_profit_margin(revenue, costs):
     """
@@ -132,7 +150,7 @@ def calculate_revenue_per_employee(revenue, employees):
     return round(rpe, 2)
 
 
-# GRADING SYSTEM 
+#  GRADING SYSTEM 
 
 def assign_grade(profit_margin, debt_ratio, cash_runway):
     """
@@ -146,7 +164,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     """
     points = 0
 
-    # Score profit margin (0 to 3 points) 
+    #  Score profit margin (0 to 3 points) 
     if profit_margin >= 20:
         points = points + 3
     elif profit_margin >= 10:
@@ -156,7 +174,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Negative margin = 0 points
 
-    # Score debt ratio (0 to 3 points) 
+    #  Score debt ratio (0 to 3 points) 
     if debt_ratio <= 20:
         points = points + 3
     elif debt_ratio <= 40:
@@ -166,7 +184,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Very high debt = 0 points
 
-    # Score cash runway (0 to 3 points) 
+    #  Score cash runway (0 to 3 points) 
     if cash_runway == -1.0:
         # Profitable company, no burn
         points = points + 3
@@ -177,7 +195,7 @@ def assign_grade(profit_margin, debt_ratio, cash_runway):
     else:
         points = points + 0  # Less than 6 months = danger
 
-    # Convert total points to a letter grade 
+    #  Convert total points to a letter grade 
     if points >= 8:
         grade = "A"
     elif points >= 6:
@@ -500,5 +518,5 @@ def main():
             print("\n  Invalid choice. Please enter 1, 2, 3, 4, or 5.")
 
 
-# RUN THE PROGRAM 
+#  RUN THE PROGRAM
 main()
