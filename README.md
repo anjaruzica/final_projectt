@@ -1,7 +1,7 @@
 # Company Financial Health Scanner
 
 **Programming for Economists II - Final Project**
-**IE University**
+
 
 ## What It Does
 
